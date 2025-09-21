@@ -1,6 +1,6 @@
 
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Platform, Alert } from 'react-native';
 import { colors, commonStyles } from '../styles/commonStyles';
 import Icon from './Icon';
 import { useTranslation } from '../hooks/useTranslation';
@@ -35,7 +35,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 20,
+    marginBottom: 24,
   },
   title: {
     fontSize: 20,
@@ -44,15 +44,26 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     padding: 8,
+    borderRadius: 8,
+    backgroundColor: colors.backgroundAlt,
   },
   inputGroup: {
-    marginBottom: 16,
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: '600',
     color: colors.text,
     marginBottom: 8,
+  },
+  requiredLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: colors.text,
+    marginBottom: 8,
+  },
+  required: {
+    color: colors.error,
   },
   input: {
     backgroundColor: colors.card,
@@ -62,6 +73,10 @@ const styles = StyleSheet.create({
     color: colors.text,
     borderWidth: 1,
     borderColor: colors.border,
+  },
+  inputError: {
+    borderColor: colors.error,
+    borderWidth: 2,
   },
   textArea: {
     minHeight: 80,
@@ -85,17 +100,20 @@ const styles = StyleSheet.create({
   dateTimeText: {
     fontSize: 16,
     color: colors.text,
+    fontWeight: '500',
   },
   buttonContainer: {
     flexDirection: 'row',
     gap: 12,
-    marginTop: 20,
+    marginTop: 24,
   },
   button: {
     flex: 1,
     padding: 16,
     borderRadius: 12,
     alignItems: 'center',
+    justifyContent: 'center',
+    minHeight: 50,
   },
   primaryButton: {
     backgroundColor: colors.primary,
@@ -114,6 +132,16 @@ const styles = StyleSheet.create({
   },
   secondaryButtonText: {
     color: colors.text,
+  },
+  errorText: {
+    color: colors.error,
+    fontSize: 14,
+    marginTop: 4,
+  },
+  sectionDivider: {
+    height: 1,
+    backgroundColor: colors.border,
+    marginVertical: 16,
   },
 });
 
@@ -146,23 +174,51 @@ export default function AddProgramForm({
   
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [titleError, setTitleError] = useState('');
+
+  const validateForm = () => {
+    let isValid = true;
+    
+    if (!title.trim()) {
+      setTitleError(t('programTitleRequired'));
+      isValid = false;
+    } else {
+      setTitleError('');
+    }
+    
+    return isValid;
+  };
 
   const handleSubmit = () => {
-    if (!title.trim()) {
-      console.log('Title is required');
+    console.log('Tentative de soumission du formulaire');
+    
+    if (!validateForm()) {
+      console.log('Validation échouée');
+      Alert.alert('Erreur', t('programTitleRequired'));
       return;
     }
 
     const dateString = selectedDate.toISOString().split('T')[0];
     const timeString = selectedTime.toTimeString().slice(0, 5);
 
-    onAddProgram({
+    const programData = {
       date: dateString,
       time: timeString,
       title: title.trim(),
       description: description.trim() || undefined,
       note: note.trim() || undefined,
-    });
+    };
+
+    console.log('Données du programme à ajouter:', programData);
+    
+    onAddProgram(programData);
+    
+    // Afficher un message de confirmation
+    Alert.alert(
+      'Succès', 
+      isEditing ? 'Programme modifié avec succès !' : 'Nouveau programme ajouté au planning !',
+      [{ text: 'OK' }]
+    );
   };
 
   const formatDate = (date: Date) => {
@@ -185,6 +241,7 @@ export default function AddProgramForm({
     setShowDatePicker(Platform.OS === 'ios');
     if (date) {
       setSelectedDate(date);
+      console.log('Date sélectionnée:', date.toISOString().split('T')[0]);
     }
   };
 
@@ -192,6 +249,7 @@ export default function AddProgramForm({
     setShowTimePicker(Platform.OS === 'ios');
     if (date) {
       setSelectedTime(date);
+      console.log('Heure sélectionnée:', date.toTimeString().slice(0, 5));
     }
   };
 
@@ -206,42 +264,59 @@ export default function AddProgramForm({
         </TouchableOpacity>
       </View>
 
+      {/* Champ Nouveau Programme */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>{t('programTitle')} *</Text>
+        <Text style={styles.requiredLabel}>
+          {t('programTitle')} <Text style={styles.required}>*</Text>
+        </Text>
         <TextInput
-          style={styles.input}
+          style={[styles.input, titleError ? styles.inputError : null]}
           value={title}
-          onChangeText={setTitle}
+          onChangeText={(text) => {
+            setTitle(text);
+            if (titleError && text.trim()) {
+              setTitleError('');
+            }
+          }}
           placeholder={t('enterProgramTitle')}
           placeholderTextColor={colors.textSecondary}
         />
+        {titleError ? <Text style={styles.errorText}>{titleError}</Text> : null}
       </View>
 
+      <View style={styles.sectionDivider} />
+
+      {/* Date du Programme */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>{t('dateAndTime')}</Text>
-        <View style={styles.dateTimeContainer}>
-          <TouchableOpacity 
-            style={styles.dateTimeButton}
-            onPress={() => setShowDatePicker(true)}
-          >
-            <Text style={styles.dateTimeText}>
-              {formatDate(selectedDate)}
-            </Text>
-            <Icon name="calendar-outline" size={20} color={colors.textSecondary} />
-          </TouchableOpacity>
-          
-          <TouchableOpacity 
-            style={styles.dateTimeButton}
-            onPress={() => setShowTimePicker(true)}
-          >
-            <Text style={styles.dateTimeText}>
-              {formatTime(selectedTime)}
-            </Text>
-            <Icon name="time-outline" size={20} color={colors.textSecondary} />
-          </TouchableOpacity>
-        </View>
+        <Text style={styles.label}>{t('programDate')}</Text>
+        <TouchableOpacity 
+          style={styles.dateTimeButton}
+          onPress={() => setShowDatePicker(true)}
+        >
+          <Text style={styles.dateTimeText}>
+            {formatDate(selectedDate)}
+          </Text>
+          <Icon name="calendar-outline" size={20} color={colors.primary} />
+        </TouchableOpacity>
       </View>
 
+      {/* Heure du Programme */}
+      <View style={styles.inputGroup}>
+        <Text style={styles.label}>{t('programTime')}</Text>
+        <TouchableOpacity 
+          style={styles.dateTimeButton}
+          onPress={() => setShowTimePicker(true)}
+        >
+          <Text style={styles.dateTimeText}>
+            {formatTime(selectedTime)}
+          </Text>
+          <Icon name="time-outline" size={20} color={colors.primary} />
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.sectionDivider} />
+
+      {/* Description (optionnelle) */}
       <View style={styles.inputGroup}>
         <Text style={styles.label}>{t('description')}</Text>
         <TextInput
@@ -255,8 +330,9 @@ export default function AddProgramForm({
         />
       </View>
 
+      {/* Note */}
       <View style={styles.inputGroup}>
-        <Text style={styles.label}>{t('note')}</Text>
+        <Text style={styles.label}>{t('programNote')}</Text>
         <TextInput
           style={[styles.input, styles.textArea]}
           value={note}
@@ -268,6 +344,7 @@ export default function AddProgramForm({
         />
       </View>
 
+      {/* Boutons de validation */}
       <View style={styles.buttonContainer}>
         <TouchableOpacity 
           style={[styles.button, styles.secondaryButton]} 
@@ -283,7 +360,7 @@ export default function AddProgramForm({
           onPress={handleSubmit}
         >
           <Text style={[styles.buttonText, styles.primaryButtonText]}>
-            {isEditing ? t('save') : t('addProgram')}
+            {t('validate')}
           </Text>
         </TouchableOpacity>
       </View>
