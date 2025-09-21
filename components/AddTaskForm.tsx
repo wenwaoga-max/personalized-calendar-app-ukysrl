@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { colors, commonStyles } from '../styles/commonStyles';
 import { Task } from '../types/calendar';
+import { useTranslation } from '../hooks/useTranslation';
 import Icon from './Icon';
 
 interface AddTaskFormProps {
@@ -11,6 +12,7 @@ interface AddTaskFormProps {
 }
 
 export default function AddTaskForm({ onAddTask, onCancel }: AddTaskFormProps) {
+  const { t } = useTranslation();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [priority, setPriority] = useState<'low' | 'medium' | 'high'>('medium');
@@ -48,10 +50,19 @@ export default function AddTaskForm({ onAddTask, onCancel }: AddTaskFormProps) {
     }
   };
 
+  const getPriorityText = (p: string) => {
+    switch (p) {
+      case 'high': return t('high');
+      case 'medium': return t('medium');
+      case 'low': return t('low');
+      default: return p;
+    }
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={commonStyles.subtitle}>Add New Task</Text>
+        <Text style={commonStyles.subtitle}>{t('addNewTask')}</Text>
         <TouchableOpacity onPress={onCancel}>
           <Icon name="close" size={24} color={colors.textSecondary} />
         </TouchableOpacity>
@@ -59,23 +70,23 @@ export default function AddTaskForm({ onAddTask, onCancel }: AddTaskFormProps) {
 
       <View style={styles.form}>
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Task Title *</Text>
+          <Text style={styles.label}>{t('taskTitleRequired')}</Text>
           <TextInput
             style={styles.input}
             value={title}
             onChangeText={setTitle}
-            placeholder="Enter task title"
+            placeholder={t('enterTaskTitle')}
             placeholderTextColor={colors.textSecondary}
           />
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Description</Text>
+          <Text style={styles.label}>{t('description')}</Text>
           <TextInput
             style={[styles.input, styles.textArea]}
             value={description}
             onChangeText={setDescription}
-            placeholder="Enter task description (optional)"
+            placeholder={t('enterTaskDescription')}
             placeholderTextColor={colors.textSecondary}
             multiline
             numberOfLines={3}
@@ -83,7 +94,7 @@ export default function AddTaskForm({ onAddTask, onCancel }: AddTaskFormProps) {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Priority</Text>
+          <Text style={styles.label}>{t('priority')}</Text>
           <View style={styles.priorityContainer}>
             {(['low', 'medium', 'high'] as const).map((p) => (
               <TouchableOpacity
@@ -104,7 +115,7 @@ export default function AddTaskForm({ onAddTask, onCancel }: AddTaskFormProps) {
                     textTransform: 'capitalize',
                   }
                 ]}>
-                  {p}
+                  {getPriorityText(p)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -112,7 +123,7 @@ export default function AddTaskForm({ onAddTask, onCancel }: AddTaskFormProps) {
         </View>
 
         <View style={styles.inputGroup}>
-          <Text style={styles.label}>Due Date (Optional)</Text>
+          <Text style={styles.label}>{t('dueDateOptional')}</Text>
           <TextInput
             style={styles.input}
             value={dueDate}
@@ -127,13 +138,13 @@ export default function AddTaskForm({ onAddTask, onCancel }: AddTaskFormProps) {
             style={[styles.button, styles.cancelButton]}
             onPress={onCancel}
           >
-            <Text style={styles.cancelButtonText}>Cancel</Text>
+            <Text style={styles.cancelButtonText}>{t('cancel')}</Text>
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.button, styles.submitButton]}
             onPress={handleSubmit}
           >
-            <Text style={styles.submitButtonText}>Add Task</Text>
+            <Text style={styles.submitButtonText}>{t('addTask')}</Text>
           </TouchableOpacity>
         </View>
       </View>

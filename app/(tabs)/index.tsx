@@ -4,35 +4,31 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles, colors } from '../../styles/commonStyles';
 import { useCalendarData } from '../../hooks/useCalendarData';
+import { useTranslation } from '../../hooks/useTranslation';
 import Icon from '../../components/Icon';
 
 export default function DailyProgramScreen() {
   const { dailyProgram, toggleProgramItem, getStats } = useCalendarData();
+  const { t, formatDate } = useTranslation();
   const stats = getStats();
 
   const formatTime = (time: string) => {
     const [hours, minutes] = time.split(':');
     const hour = parseInt(hours);
-    const ampm = hour >= 12 ? 'PM' : 'AM';
-    const displayHour = hour % 12 || 12;
-    return `${displayHour}:${minutes} ${ampm}`;
+    const displayHour = hour.toString().padStart(2, '0');
+    return `${displayHour}:${minutes}`;
   };
 
   const getCurrentDate = () => {
     const today = new Date();
-    return today.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    return formatDate(today);
   };
 
   return (
     <SafeAreaView style={commonStyles.container}>
       <ScrollView style={commonStyles.content} showsVerticalScrollIndicator={false}>
         <View style={commonStyles.section}>
-          <Text style={commonStyles.title}>Daily Program</Text>
+          <Text style={commonStyles.title}>{t('dailyProgram')}</Text>
           <Text style={commonStyles.textSecondary}>{getCurrentDate()}</Text>
         </View>
 
@@ -41,10 +37,10 @@ export default function DailyProgramScreen() {
           <View style={commonStyles.row}>
             <View style={{ flex: 1 }}>
               <Text style={[commonStyles.text, { fontWeight: '600' }]}>
-                Today&apos;s Progress
+                {t('todaysProgress')}
               </Text>
               <Text style={commonStyles.textSecondary}>
-                {stats.programCompleted} of {stats.totalProgram} completed
+                {stats.programCompleted} {t('of')} {stats.totalProgram} {t('completed')}
               </Text>
             </View>
             <View style={commonStyles.centerContent}>
@@ -57,7 +53,7 @@ export default function DailyProgramScreen() {
 
         {/* Daily Program Items */}
         <View style={commonStyles.section}>
-          <Text style={commonStyles.subtitle}>Schedule</Text>
+          <Text style={commonStyles.subtitle}>{t('schedule')}</Text>
           {dailyProgram.map((item) => (
             <TouchableOpacity
               key={item.id}
@@ -122,20 +118,20 @@ export default function DailyProgramScreen() {
         {/* Quick Stats */}
         <View style={[commonStyles.card, { marginBottom: 20 }]}>
           <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 12 }]}>
-            Quick Stats
+            {t('quickStats')}
           </Text>
           <View style={commonStyles.row}>
             <View style={commonStyles.centerContent}>
               <Text style={[commonStyles.title, { fontSize: 20, color: colors.primary }]}>
                 {stats.tasksCompleted}
               </Text>
-              <Text style={commonStyles.textSecondary}>Tasks Done</Text>
+              <Text style={commonStyles.textSecondary}>{t('tasksDone')}</Text>
             </View>
             <View style={commonStyles.centerContent}>
               <Text style={[commonStyles.title, { fontSize: 20, color: colors.success }]}>
                 {stats.avgObjectiveProgress}%
               </Text>
-              <Text style={commonStyles.textSecondary}>Objectives</Text>
+              <Text style={commonStyles.textSecondary}>{t('objectives')}</Text>
             </View>
           </View>
         </View>

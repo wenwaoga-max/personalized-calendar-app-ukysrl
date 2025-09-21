@@ -4,12 +4,14 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles, colors } from '../../styles/commonStyles';
 import { useCalendarData } from '../../hooks/useCalendarData';
+import { useTranslation } from '../../hooks/useTranslation';
 import Icon from '../../components/Icon';
 import SimpleBottomSheet from '../../components/BottomSheet';
 import AddTaskForm from '../../components/AddTaskForm';
 
 export default function TasksScreen() {
   const { tasks, toggleTask, addTask } = useCalendarData();
+  const { t } = useTranslation();
   const [showAddTask, setShowAddTask] = useState(false);
 
   const getPriorityColor = (priority: string) => {
@@ -30,6 +32,15 @@ export default function TasksScreen() {
     }
   };
 
+  const getPriorityText = (priority: string) => {
+    switch (priority) {
+      case 'high': return t('high');
+      case 'medium': return t('medium');
+      case 'low': return t('low');
+      default: return priority;
+    }
+  };
+
   const completedTasks = tasks.filter(task => task.completed);
   const pendingTasks = tasks.filter(task => !task.completed);
 
@@ -38,9 +49,9 @@ export default function TasksScreen() {
       <ScrollView style={commonStyles.content} showsVerticalScrollIndicator={false}>
         <View style={[commonStyles.row, { marginBottom: 20 }]}>
           <View>
-            <Text style={commonStyles.title}>Tasks</Text>
+            <Text style={commonStyles.title}>{t('tasks')}</Text>
             <Text style={commonStyles.textSecondary}>
-              {completedTasks.length} of {tasks.length} completed
+              {completedTasks.length} {t('of')} {tasks.length} {t('completed')}
             </Text>
           </View>
           <TouchableOpacity
@@ -60,7 +71,7 @@ export default function TasksScreen() {
               marginLeft: 4,
               fontWeight: '600',
             }}>
-              Add Task
+              {t('addTask')}
             </Text>
           </TouchableOpacity>
         </View>
@@ -68,7 +79,7 @@ export default function TasksScreen() {
         {/* Pending Tasks */}
         {pendingTasks.length > 0 && (
           <View style={commonStyles.section}>
-            <Text style={commonStyles.subtitle}>Pending Tasks</Text>
+            <Text style={commonStyles.subtitle}>{t('pendingTasks')}</Text>
             {pendingTasks.map((task) => (
               <TouchableOpacity
                 key={task.id}
@@ -93,7 +104,7 @@ export default function TasksScreen() {
                         commonStyles.textSecondary,
                         { marginLeft: 6, textTransform: 'capitalize' }
                       ]}>
-                        {task.priority} Priority
+                        {getPriorityText(task.priority)} {t('priority')}
                       </Text>
                     </View>
                     <Text style={[commonStyles.text, { fontWeight: '600' }]}>
@@ -109,7 +120,7 @@ export default function TasksScreen() {
                         commonStyles.textSecondary,
                         { marginTop: 4, fontWeight: '500' }
                       ]}>
-                        Due: {new Date(task.dueDate).toLocaleDateString()}
+                        {t('due')}: {new Date(task.dueDate).toLocaleDateString('fr-FR')}
                       </Text>
                     )}
                   </View>
@@ -129,7 +140,7 @@ export default function TasksScreen() {
         {/* Completed Tasks */}
         {completedTasks.length > 0 && (
           <View style={commonStyles.section}>
-            <Text style={commonStyles.subtitle}>Completed Tasks</Text>
+            <Text style={commonStyles.subtitle}>{t('completedTasks')}</Text>
             {completedTasks.map((task) => (
               <TouchableOpacity
                 key={task.id}
@@ -181,7 +192,7 @@ export default function TasksScreen() {
           <View style={[commonStyles.centerContent, { marginTop: 60 }]}>
             <Icon name="checkmark-circle-outline" size={64} color={colors.textSecondary} />
             <Text style={[commonStyles.text, { marginTop: 16, textAlign: 'center' }]}>
-              No tasks yet. Add your first task to get started!
+              {t('noTasksYet')}
             </Text>
           </View>
         )}

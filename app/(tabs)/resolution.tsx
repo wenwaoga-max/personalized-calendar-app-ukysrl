@@ -4,10 +4,12 @@ import { View, Text, ScrollView, TextInput, TouchableOpacity } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles, colors } from '../../styles/commonStyles';
 import { useCalendarData } from '../../hooks/useCalendarData';
+import { useTranslation } from '../../hooks/useTranslation';
 import Icon from '../../components/Icon';
 
 export default function ResolutionScreen() {
   const { dailyResolution, updateResolution } = useCalendarData();
+  const { t, formatDate } = useTranslation();
   const [resolution, setResolution] = useState(dailyResolution?.resolution || '');
   const [reflection, setReflection] = useState(dailyResolution?.reflection || '');
   const [mood, setMood] = useState<'excellent' | 'good' | 'neutral' | 'poor'>(
@@ -50,28 +52,33 @@ export default function ResolutionScreen() {
     }
   };
 
+  const getMoodText = (moodType: string) => {
+    switch (moodType) {
+      case 'excellent': return t('excellent');
+      case 'good': return t('good');
+      case 'neutral': return t('neutral');
+      case 'poor': return t('poor');
+      default: return moodType;
+    }
+  };
+
   const getCurrentDate = () => {
     const today = new Date();
-    return today.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    return formatDate(today);
   };
 
   return (
     <SafeAreaView style={commonStyles.container}>
       <ScrollView style={commonStyles.content} showsVerticalScrollIndicator={false}>
         <View style={commonStyles.section}>
-          <Text style={commonStyles.title}>Daily Resolution</Text>
+          <Text style={commonStyles.title}>{t('dailyResolution')}</Text>
           <Text style={commonStyles.textSecondary}>{getCurrentDate()}</Text>
         </View>
 
         {/* Resolution Input */}
         <View style={commonStyles.card}>
           <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 12 }]}>
-            Today&apos;s Resolution
+            {t('todaysResolution')}
           </Text>
           <TextInput
             style={{
@@ -88,7 +95,7 @@ export default function ResolutionScreen() {
             }}
             value={resolution}
             onChangeText={setResolution}
-            placeholder="What do you resolve to accomplish today?"
+            placeholder={t('resolutionPlaceholder')}
             placeholderTextColor={colors.textSecondary}
             multiline
             numberOfLines={4}
@@ -98,7 +105,7 @@ export default function ResolutionScreen() {
         {/* Mood Selection */}
         <View style={commonStyles.card}>
           <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 16 }]}>
-            Current Mood
+            {t('currentMood')}
           </Text>
           <View style={{
             flexDirection: 'row',
@@ -132,7 +139,7 @@ export default function ResolutionScreen() {
                     fontWeight: mood === moodType ? '600' : '400',
                   }
                 ]}>
-                  {moodType}
+                  {getMoodText(moodType)}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -142,7 +149,7 @@ export default function ResolutionScreen() {
         {/* Evening Reflection */}
         <View style={commonStyles.card}>
           <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 12 }]}>
-            Evening Reflection
+            {t('eveningReflection')}
           </Text>
           <TextInput
             style={{
@@ -159,7 +166,7 @@ export default function ResolutionScreen() {
             }}
             value={reflection}
             onChangeText={setReflection}
-            placeholder="How did your day go? What did you learn?"
+            placeholder={t('reflectionPlaceholder')}
             placeholderTextColor={colors.textSecondary}
             multiline
             numberOfLines={4}
@@ -182,7 +189,7 @@ export default function ResolutionScreen() {
             fontSize: 16,
             fontWeight: '600',
           }}>
-            Save Resolution
+            {t('saveResolution')}
           </Text>
         </TouchableOpacity>
 
@@ -190,7 +197,7 @@ export default function ResolutionScreen() {
         {dailyResolution && (
           <View style={[commonStyles.card, { backgroundColor: colors.backgroundAlt }]}>
             <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 12 }]}>
-              Saved Resolution
+              {t('savedResolution')}
             </Text>
             <Text style={[commonStyles.text, { marginBottom: 8 }]}>
               {dailyResolution.resolution}
@@ -198,7 +205,7 @@ export default function ResolutionScreen() {
             {dailyResolution.reflection && (
               <>
                 <Text style={[commonStyles.textSecondary, { fontWeight: '600', marginTop: 12, marginBottom: 4 }]}>
-                  Reflection:
+                  {t('reflection')}:
                 </Text>
                 <Text style={commonStyles.textSecondary}>
                   {dailyResolution.reflection}
@@ -206,7 +213,7 @@ export default function ResolutionScreen() {
               </>
             )}
             <View style={[commonStyles.row, { marginTop: 12 }]}>
-              <Text style={commonStyles.textSecondary}>Mood: </Text>
+              <Text style={commonStyles.textSecondary}>{t('mood')}: </Text>
               <Icon
                 name={getMoodIcon(dailyResolution.mood)}
                 size={20}
@@ -216,7 +223,7 @@ export default function ResolutionScreen() {
                 commonStyles.textSecondary,
                 { marginLeft: 4, textTransform: 'capitalize' }
               ]}>
-                {dailyResolution.mood}
+                {getMoodText(dailyResolution.mood)}
               </Text>
             </View>
           </View>

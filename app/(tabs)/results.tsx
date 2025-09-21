@@ -4,11 +4,13 @@ import { View, Text, ScrollView, TouchableOpacity, TextInput } from 'react-nativ
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles, colors } from '../../styles/commonStyles';
 import { useCalendarData } from '../../hooks/useCalendarData';
+import { useTranslation } from '../../hooks/useTranslation';
 import Icon from '../../components/Icon';
 import ProgressCircle from '../../components/ProgressCircle';
 
 export default function ResultsScreen() {
   const { dailyResult, updateDailyResult, getStats } = useCalendarData();
+  const { t, formatDate } = useTranslation();
   const [notes, setNotes] = useState(dailyResult?.notes || '');
   const [rating, setRating] = useState(dailyResult?.rating || 3);
   
@@ -29,12 +31,7 @@ export default function ResultsScreen() {
 
   const getCurrentDate = () => {
     const today = new Date();
-    return today.toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-    });
+    return formatDate(today);
   };
 
   const getRatingColor = (stars: number) => {
@@ -43,18 +40,29 @@ export default function ResultsScreen() {
     return colors.danger;
   };
 
+  const getRatingText = (stars: number) => {
+    switch (stars) {
+      case 5: return t('excellentDay');
+      case 4: return t('greatDay');
+      case 3: return t('goodDay');
+      case 2: return t('couldBeBetter');
+      case 1: return t('toughDay');
+      default: return '';
+    }
+  };
+
   return (
     <SafeAreaView style={commonStyles.container}>
       <ScrollView style={commonStyles.content} showsVerticalScrollIndicator={false}>
         <View style={commonStyles.section}>
-          <Text style={commonStyles.title}>Daily Results</Text>
+          <Text style={commonStyles.title}>{t('dailyResults')}</Text>
           <Text style={commonStyles.textSecondary}>{getCurrentDate()}</Text>
         </View>
 
         {/* Performance Overview */}
         <View style={commonStyles.card}>
           <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 16 }]}>
-            Today&apos;s Performance
+            {t('todaysPerformance')}
           </Text>
           <View style={commonStyles.row}>
             <View style={commonStyles.centerContent}>
@@ -65,7 +73,7 @@ export default function ResultsScreen() {
                 color={colors.primary}
               />
               <Text style={[commonStyles.textSecondary, { marginTop: 8 }]}>
-                Tasks
+                {t('tasks')}
               </Text>
             </View>
             <View style={commonStyles.centerContent}>
@@ -76,7 +84,7 @@ export default function ResultsScreen() {
                 color={colors.secondary}
               />
               <Text style={[commonStyles.textSecondary, { marginTop: 8 }]}>
-                Program
+                {t('program')}
               </Text>
             </View>
             <View style={commonStyles.centerContent}>
@@ -87,7 +95,7 @@ export default function ResultsScreen() {
                 color={colors.success}
               />
               <Text style={[commonStyles.textSecondary, { marginTop: 8 }]}>
-                Objectives
+                {t('objectives')}
               </Text>
             </View>
           </View>
@@ -96,14 +104,14 @@ export default function ResultsScreen() {
         {/* Detailed Stats */}
         <View style={commonStyles.card}>
           <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 16 }]}>
-            Detailed Statistics
+            {t('detailedStatistics')}
           </Text>
           
           <View style={[commonStyles.row, { marginBottom: 12 }]}>
             <View style={{ flex: 1 }}>
-              <Text style={commonStyles.text}>Tasks Completed</Text>
+              <Text style={commonStyles.text}>{t('tasksCompleted')}</Text>
               <Text style={commonStyles.textSecondary}>
-                {stats.tasksCompleted} of {stats.totalTasks}
+                {stats.tasksCompleted} {t('of')} {stats.totalTasks}
               </Text>
             </View>
             <Text style={[commonStyles.title, { fontSize: 20, color: colors.primary }]}>
@@ -113,9 +121,9 @@ export default function ResultsScreen() {
 
           <View style={[commonStyles.row, { marginBottom: 12 }]}>
             <View style={{ flex: 1 }}>
-              <Text style={commonStyles.text}>Program Completed</Text>
+              <Text style={commonStyles.text}>{t('programCompleted')}</Text>
               <Text style={commonStyles.textSecondary}>
-                {stats.programCompleted} of {stats.totalProgram}
+                {stats.programCompleted} {t('of')} {stats.totalProgram}
               </Text>
             </View>
             <Text style={[commonStyles.title, { fontSize: 20, color: colors.secondary }]}>
@@ -125,9 +133,9 @@ export default function ResultsScreen() {
 
           <View style={commonStyles.row}>
             <View style={{ flex: 1 }}>
-              <Text style={commonStyles.text}>Average Objective Progress</Text>
+              <Text style={commonStyles.text}>{t('averageObjectiveProgress')}</Text>
               <Text style={commonStyles.textSecondary}>
-                Across all objectives
+                {t('acrossAllObjectives')}
               </Text>
             </View>
             <Text style={[commonStyles.title, { fontSize: 20, color: colors.success }]}>
@@ -139,7 +147,7 @@ export default function ResultsScreen() {
         {/* Day Rating */}
         <View style={commonStyles.card}>
           <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 16 }]}>
-            Rate Your Day
+            {t('rateYourDay')}
           </Text>
           <View style={[commonStyles.row, { justifyContent: 'center', marginBottom: 16 }]}>
             {[1, 2, 3, 4, 5].map((star) => (
@@ -157,18 +165,14 @@ export default function ResultsScreen() {
             ))}
           </View>
           <Text style={[commonStyles.textSecondary, { textAlign: 'center' }]}>
-            {rating === 5 && 'Excellent day!'}
-            {rating === 4 && 'Great day!'}
-            {rating === 3 && 'Good day'}
-            {rating === 2 && 'Could be better'}
-            {rating === 1 && 'Tough day'}
+            {getRatingText(rating)}
           </Text>
         </View>
 
         {/* Notes */}
         <View style={commonStyles.card}>
           <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 12 }]}>
-            Daily Notes
+            {t('dailyNotes')}
           </Text>
           <TextInput
             style={{
@@ -185,7 +189,7 @@ export default function ResultsScreen() {
             }}
             value={notes}
             onChangeText={setNotes}
-            placeholder="What went well today? What could be improved?"
+            placeholder={t('notesPlaceholder')}
             placeholderTextColor={colors.textSecondary}
             multiline
             numberOfLines={4}
@@ -208,7 +212,7 @@ export default function ResultsScreen() {
             fontSize: 16,
             fontWeight: '600',
           }}>
-            Save Daily Result
+            {t('saveDailyResult')}
           </Text>
         </TouchableOpacity>
 
@@ -216,11 +220,11 @@ export default function ResultsScreen() {
         {dailyResult && (
           <View style={[commonStyles.card, { backgroundColor: colors.backgroundAlt }]}>
             <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 12 }]}>
-              Saved Result
+              {t('savedResult')}
             </Text>
             
             <View style={[commonStyles.row, { marginBottom: 8 }]}>
-              <Text style={commonStyles.textSecondary}>Rating: </Text>
+              <Text style={commonStyles.textSecondary}>{t('rating')}: </Text>
               <View style={{ flexDirection: 'row' }}>
                 {[1, 2, 3, 4, 5].map((star) => (
                   <Icon
@@ -235,17 +239,17 @@ export default function ResultsScreen() {
 
             <View style={[commonStyles.row, { marginBottom: 8 }]}>
               <Text style={commonStyles.textSecondary}>
-                Tasks: {dailyResult.tasksCompleted}/{dailyResult.totalTasks}
+                {t('tasks')}: {dailyResult.tasksCompleted}/{dailyResult.totalTasks}
               </Text>
               <Text style={commonStyles.textSecondary}>
-                Objectives: {dailyResult.objectivesProgress}%
+                {t('objectives')}: {dailyResult.objectivesProgress}%
               </Text>
             </View>
 
             {dailyResult.notes && (
               <>
                 <Text style={[commonStyles.textSecondary, { fontWeight: '600', marginTop: 12, marginBottom: 4 }]}>
-                  Notes:
+                  {t('notes')}:
                 </Text>
                 <Text style={commonStyles.textSecondary}>
                   {dailyResult.notes}

@@ -1,0 +1,127 @@
+
+export const translations = {
+  // Navigation
+  dailyProgram: 'Programme Quotidien',
+  tasks: 'Tâches',
+  resolution: 'Résolution',
+  objectives: 'Objectifs',
+  results: 'Résultats',
+
+  // Daily Program
+  todaysProgress: 'Progrès d\'Aujourd\'hui',
+  completed: 'terminé',
+  schedule: 'Planning',
+  quickStats: 'Statistiques Rapides',
+  tasksDone: 'Tâches Faites',
+
+  // Tasks
+  addTask: 'Ajouter Tâche',
+  pendingTasks: 'Tâches En Cours',
+  completedTasks: 'Tâches Terminées',
+  noTasksYet: 'Aucune tâche pour le moment. Ajoutez votre première tâche pour commencer !',
+  priority: 'Priorité',
+  high: 'haute',
+  medium: 'moyenne',
+  low: 'faible',
+  due: 'Échéance',
+
+  // Add Task Form
+  addNewTask: 'Ajouter Nouvelle Tâche',
+  taskTitle: 'Titre de la Tâche',
+  taskTitleRequired: 'Titre de la Tâche *',
+  description: 'Description',
+  enterTaskTitle: 'Entrez le titre de la tâche',
+  enterTaskDescription: 'Entrez la description de la tâche (optionnel)',
+  dueDate: 'Date d\'Échéance',
+  dueDateOptional: 'Date d\'Échéance (Optionnel)',
+  cancel: 'Annuler',
+
+  // Resolution
+  dailyResolution: 'Résolution Quotidienne',
+  todaysResolution: 'Résolution d\'Aujourd\'hui',
+  resolutionPlaceholder: 'Que vous résolvez-vous à accomplir aujourd\'hui ?',
+  currentMood: 'Humeur Actuelle',
+  excellent: 'excellent',
+  good: 'bien',
+  neutral: 'neutre',
+  poor: 'mauvais',
+  eveningReflection: 'Réflexion du Soir',
+  reflectionPlaceholder: 'Comment s\'est passée votre journée ? Qu\'avez-vous appris ?',
+  saveResolution: 'Sauvegarder Résolution',
+  savedResolution: 'Résolution Sauvegardée',
+  reflection: 'Réflexion',
+  mood: 'Humeur',
+
+  // Objectives
+  progressOverview: 'Aperçu des Progrès',
+  averageProgress: 'Progrès Moyen',
+  inProgress: 'En Cours',
+  activeObjectives: 'Objectifs Actifs',
+  completedObjectives: 'Objectifs Terminés',
+  noObjectivesYet: 'Aucun objectif défini pour le moment. Commencez par définir votre premier objectif !',
+  target: 'Objectif',
+  personal: 'personnel',
+  professional: 'professionnel',
+  health: 'santé',
+  learning: 'apprentissage',
+
+  // Results
+  dailyResults: 'Résultats Quotidiens',
+  todaysPerformance: 'Performance d\'Aujourd\'hui',
+  program: 'Programme',
+  detailedStatistics: 'Statistiques Détaillées',
+  tasksCompleted: 'Tâches Terminées',
+  programCompleted: 'Programme Terminé',
+  averageObjectiveProgress: 'Progrès Moyen des Objectifs',
+  acrossAllObjectives: 'Sur tous les objectifs',
+  rateYourDay: 'Notez Votre Journée',
+  excellentDay: 'Excellente journée !',
+  greatDay: 'Super journée !',
+  goodDay: 'Bonne journée',
+  couldBeBetter: 'Pourrait être mieux',
+  toughDay: 'Journée difficile',
+  dailyNotes: 'Notes Quotidiennes',
+  notesPlaceholder: 'Qu\'est-ce qui s\'est bien passé aujourd\'hui ? Qu\'est-ce qui pourrait être amélioré ?',
+  saveDailyResult: 'Sauvegarder Résultat Quotidien',
+  savedResult: 'Résultat Sauvegardé',
+  rating: 'Note',
+  notes: 'Notes',
+
+  // Common
+  of: 'sur',
+  save: 'Sauvegarder',
+  edit: 'Modifier',
+  delete: 'Supprimer',
+  close: 'Fermer',
+  back: 'Retour',
+  next: 'Suivant',
+  previous: 'Précédent',
+  today: 'Aujourd\'hui',
+  yesterday: 'Hier',
+  tomorrow: 'Demain',
+
+  // Days of the week
+  monday: 'Lundi',
+  tuesday: 'Mardi',
+  wednesday: 'Mercredi',
+  thursday: 'Jeudi',
+  friday: 'Vendredi',
+  saturday: 'Samedi',
+  sunday: 'Dimanche',
+
+  // Months
+  january: 'Janvier',
+  february: 'Février',
+  march: 'Mars',
+  april: 'Avril',
+  may: 'Mai',
+  june: 'Juin',
+  july: 'Juillet',
+  august: 'Août',
+  september: 'Septembre',
+  october: 'Octobre',
+  november: 'Novembre',
+  december: 'Décembre',
+};
+
+export type TranslationKey = keyof typeof translations;

@@ -2,8 +2,11 @@
 import { Tabs } from 'expo-router';
 import { colors } from '../../styles/commonStyles';
 import Icon from '../../components/Icon';
+import { useTranslation } from '../../hooks/useTranslation';
 
 export default function TabLayout() {
+  const { t } = useTranslation();
+
   return (
     <Tabs
       screenOptions={{
@@ -28,7 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'Daily Program',
+          title: t('dailyProgram'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="calendar-outline" size={size} color={color} />
           ),
@@ -37,7 +40,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="tasks"
         options={{
-          title: 'Tasks',
+          title: t('tasks'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="checkmark-circle-outline" size={size} color={color} />
           ),
@@ -46,7 +49,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="resolution"
         options={{
-          title: 'Resolution',
+          title: t('resolution'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="bulb-outline" size={size} color={color} />
           ),
@@ -55,7 +58,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="objectives"
         options={{
-          title: 'Objectives',
+          title: t('objectives'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="target-outline" size={size} color={color} />
           ),
@@ -64,7 +67,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="results"
         options={{
-          title: 'Results',
+          title: t('results'),
           tabBarIcon: ({ color, size }) => (
             <Icon name="trophy-outline" size={size} color={color} />
           ),

@@ -4,11 +4,13 @@ import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { commonStyles, colors } from '../../styles/commonStyles';
 import { useCalendarData } from '../../hooks/useCalendarData';
+import { useTranslation } from '../../hooks/useTranslation';
 import Icon from '../../components/Icon';
 import ProgressCircle from '../../components/ProgressCircle';
 
 export default function ObjectivesScreen() {
   const { objectives, updateObjectiveProgress } = useCalendarData();
+  const { t } = useTranslation();
 
   const getCategoryIcon = (category: string) => {
     switch (category) {
@@ -30,6 +32,16 @@ export default function ObjectivesScreen() {
     }
   };
 
+  const getCategoryText = (category: string) => {
+    switch (category) {
+      case 'personal': return t('personal');
+      case 'professional': return t('professional');
+      case 'health': return t('health');
+      case 'learning': return t('learning');
+      default: return category;
+    }
+  };
+
   const handleProgressUpdate = (id: string, increment: number) => {
     const objective = objectives.find(obj => obj.id === id);
     if (objective) {
@@ -45,16 +57,16 @@ export default function ObjectivesScreen() {
     <SafeAreaView style={commonStyles.container}>
       <ScrollView style={commonStyles.content} showsVerticalScrollIndicator={false}>
         <View style={commonStyles.section}>
-          <Text style={commonStyles.title}>Objectives</Text>
+          <Text style={commonStyles.title}>{t('objectives')}</Text>
           <Text style={commonStyles.textSecondary}>
-            {completedObjectives.length} of {objectives.length} completed
+            {completedObjectives.length} {t('of')} {objectives.length} {t('completed')}
           </Text>
         </View>
 
         {/* Overview Stats */}
         <View style={commonStyles.card}>
           <Text style={[commonStyles.text, { fontWeight: '600', marginBottom: 16 }]}>
-            Progress Overview
+            {t('progressOverview')}
           </Text>
           <View style={commonStyles.row}>
             <View style={commonStyles.centerContent}>
@@ -65,7 +77,7 @@ export default function ObjectivesScreen() {
                 color={colors.primary}
               />
               <Text style={[commonStyles.textSecondary, { marginTop: 8 }]}>
-                Average Progress
+                {t('averageProgress')}
               </Text>
             </View>
             <View style={{ flex: 1, paddingLeft: 20 }}>
@@ -78,7 +90,7 @@ export default function ObjectivesScreen() {
                   marginRight: 8,
                 }} />
                 <Text style={commonStyles.textSecondary}>
-                  {completedObjectives.length} Completed
+                  {completedObjectives.length} {t('completed')}
                 </Text>
               </View>
               <View style={[commonStyles.row, { marginBottom: 8 }]}>
@@ -90,7 +102,7 @@ export default function ObjectivesScreen() {
                   marginRight: 8,
                 }} />
                 <Text style={commonStyles.textSecondary}>
-                  {activeObjectives.length} In Progress
+                  {activeObjectives.length} {t('inProgress')}
                 </Text>
               </View>
             </View>
@@ -100,7 +112,7 @@ export default function ObjectivesScreen() {
         {/* Active Objectives */}
         {activeObjectives.length > 0 && (
           <View style={commonStyles.section}>
-            <Text style={commonStyles.subtitle}>Active Objectives</Text>
+            <Text style={commonStyles.subtitle}>{t('activeObjectives')}</Text>
             {activeObjectives.map((objective) => (
               <View
                 key={objective.id}
@@ -124,7 +136,7 @@ export default function ObjectivesScreen() {
                         commonStyles.textSecondary,
                         { marginLeft: 6, textTransform: 'capitalize' }
                       ]}>
-                        {objective.category}
+                        {getCategoryText(objective.category)}
                       </Text>
                     </View>
                     <Text style={[commonStyles.text, { fontWeight: '600' }]}>
@@ -139,7 +151,7 @@ export default function ObjectivesScreen() {
                       commonStyles.textSecondary,
                       { marginTop: 4, fontWeight: '500' }
                     ]}>
-                      Target: {new Date(objective.targetDate).toLocaleDateString()}
+                      {t('target')}: {new Date(objective.targetDate).toLocaleDateString('fr-FR')}
                     </Text>
                   </View>
                   <View style={commonStyles.centerContent}>
@@ -198,7 +210,7 @@ export default function ObjectivesScreen() {
         {/* Completed Objectives */}
         {completedObjectives.length > 0 && (
           <View style={commonStyles.section}>
-            <Text style={commonStyles.subtitle}>Completed Objectives</Text>
+            <Text style={commonStyles.subtitle}>{t('completedObjectives')}</Text>
             {completedObjectives.map((objective) => (
               <View
                 key={objective.id}
@@ -242,7 +254,7 @@ export default function ObjectivesScreen() {
           <View style={[commonStyles.centerContent, { marginTop: 60 }]}>
             <Icon name="target-outline" size={64} color={colors.textSecondary} />
             <Text style={[commonStyles.text, { marginTop: 16, textAlign: 'center' }]}>
-              No objectives set yet. Start by setting your first goal!
+              {t('noObjectivesYet')}
             </Text>
           </View>
         )}
