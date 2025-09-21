@@ -6,39 +6,49 @@ import { DailyProgram, Task, DailyResolution, Objective, DailyResult } from '../
 const mockDailyProgram: DailyProgram[] = [
   {
     id: '1',
+    date: '2024-01-15',
     time: '07:00',
-    title: 'Morning Exercise',
-    description: '30 minutes of cardio',
+    title: 'Exercice Matinal',
+    description: '30 minutes de cardio',
+    note: 'Ne pas oublier les étirements',
     completed: false,
+    createdAt: '2024-01-14T20:00:00Z',
   },
   {
     id: '2',
+    date: '2024-01-15',
     time: '09:00',
-    title: 'Team Meeting',
-    description: 'Weekly sync with development team',
+    title: 'Réunion Équipe',
+    description: 'Synchronisation hebdomadaire avec l\'équipe de développement',
     completed: false,
+    createdAt: '2024-01-14T20:00:00Z',
   },
   {
     id: '3',
+    date: '2024-01-15',
     time: '14:00',
-    title: 'Project Review',
-    description: 'Review quarterly project progress',
+    title: 'Révision Projet',
+    description: 'Réviser les progrès du projet trimestriel',
+    note: 'Préparer les métriques de performance',
     completed: false,
+    createdAt: '2024-01-14T20:00:00Z',
   },
   {
     id: '4',
+    date: '2024-01-15',
     time: '18:00',
-    title: 'Personal Reading',
-    description: 'Read for 1 hour',
+    title: 'Lecture Personnelle',
+    description: 'Lire pendant 1 heure',
     completed: false,
+    createdAt: '2024-01-14T20:00:00Z',
   },
 ];
 
 const mockTasks: Task[] = [
   {
     id: '1',
-    title: 'Complete project proposal',
-    description: 'Finish the Q1 project proposal document',
+    title: 'Terminer la proposition de projet',
+    description: 'Finaliser le document de proposition de projet Q1',
     priority: 'high',
     completed: false,
     dueDate: '2024-01-15',
@@ -46,15 +56,15 @@ const mockTasks: Task[] = [
   },
   {
     id: '2',
-    title: 'Call dentist for appointment',
+    title: 'Appeler le dentiste pour un rendez-vous',
     priority: 'medium',
     completed: false,
     createdAt: '2024-01-12',
   },
   {
     id: '3',
-    title: 'Buy groceries',
-    description: 'Weekly grocery shopping',
+    title: 'Acheter les courses',
+    description: 'Courses hebdomadaires',
     priority: 'low',
     completed: true,
     createdAt: '2024-01-13',
@@ -64,8 +74,8 @@ const mockTasks: Task[] = [
 const mockObjectives: Objective[] = [
   {
     id: '1',
-    title: 'Learn React Native',
-    description: 'Complete advanced React Native course',
+    title: 'Apprendre React Native',
+    description: 'Terminer le cours avancé React Native',
     targetDate: '2024-03-01',
     progress: 65,
     category: 'learning',
@@ -73,8 +83,8 @@ const mockObjectives: Objective[] = [
   },
   {
     id: '2',
-    title: 'Lose 10 pounds',
-    description: 'Reach target weight through exercise and diet',
+    title: 'Perdre 5 kilos',
+    description: 'Atteindre le poids cible grâce à l\'exercice et au régime',
     targetDate: '2024-02-15',
     progress: 40,
     category: 'health',
@@ -82,8 +92,8 @@ const mockObjectives: Objective[] = [
   },
   {
     id: '3',
-    title: 'Save $5000',
-    description: 'Emergency fund savings goal',
+    title: 'Économiser 5000€',
+    description: 'Objectif d\'épargne d\'urgence',
     targetDate: '2024-06-01',
     progress: 80,
     category: 'personal',
@@ -104,6 +114,56 @@ export function useCalendarData() {
         item.id === id ? { ...item, completed: !item.completed } : item
       )
     );
+  };
+
+  const addProgramItem = (program: {
+    date: string;
+    time: string;
+    title: string;
+    description?: string;
+    note?: string;
+  }) => {
+    const newProgram: DailyProgram = {
+      ...program,
+      id: Date.now().toString(),
+      completed: false,
+      createdAt: new Date().toISOString(),
+    };
+    setDailyProgram(prev => [...prev, newProgram].sort((a, b) => {
+      // Sort by date first, then by time
+      if (a.date !== b.date) {
+        return a.date.localeCompare(b.date);
+      }
+      return a.time.localeCompare(b.time);
+    }));
+  };
+
+  const updateProgramItem = (id: string, updates: {
+    date?: string;
+    time?: string;
+    title?: string;
+    description?: string;
+    note?: string;
+  }) => {
+    setDailyProgram(prev => 
+      prev.map(item => 
+        item.id === id ? { ...item, ...updates } : item
+      ).sort((a, b) => {
+        // Sort by date first, then by time
+        if (a.date !== b.date) {
+          return a.date.localeCompare(b.date);
+        }
+        return a.time.localeCompare(b.time);
+      })
+    );
+  };
+
+  const deleteProgramItem = (id: string) => {
+    setDailyProgram(prev => prev.filter(item => item.id !== id));
+  };
+
+  const getProgramsForDate = (date: string) => {
+    return dailyProgram.filter(item => item.date === date);
   };
 
   const toggleTask = (id: string) => {
@@ -173,6 +233,10 @@ export function useCalendarData() {
     objectives,
     dailyResult,
     toggleProgramItem,
+    addProgramItem,
+    updateProgramItem,
+    deleteProgramItem,
+    getProgramsForDate,
     toggleTask,
     addTask,
     updateResolution,

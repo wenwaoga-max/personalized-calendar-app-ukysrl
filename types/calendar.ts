@@ -1,10 +1,13 @@
 
 export interface DailyProgram {
   id: string;
+  date: string; // Format YYYY-MM-DD
   time: string;
   title: string;
   description?: string;
+  note?: string;
   completed: boolean;
+  createdAt: string;
 }
 
 export interface Task {

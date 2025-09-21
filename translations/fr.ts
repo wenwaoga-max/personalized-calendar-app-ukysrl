@@ -13,6 +13,17 @@ export const translations = {
   schedule: 'Planning',
   quickStats: 'Statistiques Rapides',
   tasksDone: 'Tâches Faites',
+  addProgram: 'Ajouter Programme',
+  addNewProgram: 'Ajouter Nouveau Programme',
+  editProgram: 'Modifier Programme',
+  programTitle: 'Titre du Programme',
+  enterProgramTitle: 'Entrez le titre du programme',
+  enterProgramDescription: 'Entrez la description du programme (optionnel)',
+  enterProgramNote: 'Entrez une note pour ce programme (optionnel)',
+  dateAndTime: 'Date et Heure',
+  note: 'Note',
+  noProgramsYet: 'Aucun programme pour le moment. Ajoutez votre premier programme !',
+  programsForDate: 'Programmes pour le',
 
   // Tasks
   addTask: 'Ajouter Tâche',
